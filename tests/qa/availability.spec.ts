@@ -1,0 +1,25 @@
+import { test, expect } from "@playwright/test";
+test.beforeEach(async ({ context }) => { await context.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort()); });
+test("availability create, edit and delete", async ({ page }) => {
+  await page.goto("/availability");
+  await page.getByRole("button", { name: "New", exact: true }).first().click();
+  const scheduleName = `QA working hours ${Date.now()}`;
+  await page.getByRole("dialog").getByLabel("Name", { exact: true }).filter({ visible: true }).fill(scheduleName);
+  await page.getByRole("dialog").getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(page).toHaveURL(/availability\/\d+/);
+  await page.getByRole("switch", { name: "Monday", exact: true }).click();
+  await Promise.all([page.waitForResponse(r => r.request().method() === "POST" && r.url().includes("availability")), page.getByRole("button", { name: "Save", exact: true }).click()]);
+  await page.goto("/availability");
+  await expect(page.getByRole("link", { name: new RegExp(scheduleName) })).toBeVisible();
+  await page.getByRole("button", { name: "New", exact: true }).first().click();
+  const temporaryName = `QA temporary hours ${Date.now()}`;
+  await page.getByRole("dialog").getByLabel("Name", { exact: true }).filter({ visible: true }).fill(temporaryName);
+  await page.getByRole("dialog").getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(page).toHaveURL(/availability\/\d+/);
+  await page.goto("/availability");
+  const row = page.locator("li").filter({ has: page.getByRole("link", { name: new RegExp(temporaryName) }) });
+  await row.getByTestId("schedule-more").filter({ visible: true }).click();
+  await page.getByTestId("delete-schedule").filter({ visible: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
+  await expect(page.getByRole("link", { name: new RegExp(temporaryName) })).toHaveCount(0);
+});

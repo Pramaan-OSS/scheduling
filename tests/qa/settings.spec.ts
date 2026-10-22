@@ -1,0 +1,21 @@
+import { test, expect } from "@playwright/test";
+test.beforeEach(async ({ context }) => { await context.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort()); });
+test("general, profile and appearance changes save", async ({ page }) => {
+  await page.goto("/settings/my-account/general");
+  const format = page.getByText(/^(12-hour|24-hour)$/).first();
+  const before = await format.innerText();
+  await page.getByLabel("Time format", { exact: true }).filter({ visible: true }).click();
+  await page.getByRole("option", { name: before === "12-hour" ? "24-hour" : "12-hour", exact: true }).click();
+  let saved = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname.includes("updateProfile"));
+  await page.getByTestId("general-submit-button").filter({ visible: true }).click(); expect((await saved).ok()).toBe(true);
+  await page.goto("/settings/my-account/profile");
+  await page.getByLabel("Full name", { exact: true }).filter({ visible: true }).fill(`Scheduling QA ${Date.now()}`);
+  saved = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname.includes("updateProfile"));
+  await page.getByTestId("profile-submit-button").filter({ visible: true }).click(); expect((await saved).ok()).toBe(true);
+  await page.goto("/settings/my-account/appearance");
+  await page.getByTestId("theme-dark").filter({ visible: true }).click();
+  const update = page.getByTestId("update-theme-btn").filter({ visible: true });
+  if (!(await update.isEnabled())) await page.getByTestId("theme-light").filter({ visible: true }).click();
+  saved = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname.includes("updateProfile"));
+  await update.click(); expect((await saved).ok()).toBe(true);
+});

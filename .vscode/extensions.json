@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "biomejs.biome",
+    "DavidAnson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one",
+    "ban.spellright",
+    "legacyPayment.vscode-legacyPayment",
+    "Prisma.prisma",
+    "rebornix.project-snippets",
+    "inlang.vs-code-extension"
+  ]
+}

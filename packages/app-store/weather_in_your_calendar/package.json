@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "private": true,
+  "name": "@scheduling/weather_in_your_calendar",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "description": "Get the local weather forecast with icons in your calendar\r\r",
+  "dependencies": {
+    "@scheduling/lib": "workspace:*"
+  },
+  "devDependencies": {
+    "@scheduling/types": "workspace:*"
+  },
+  "license": "AGPL-3.0"
+}

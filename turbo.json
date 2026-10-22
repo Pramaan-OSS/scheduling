@@ -1,0 +1,674 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "globalDependencies": [
+    "yarn.lock"
+  ],
+  "globalEnv": [
+    "ALLOWED_HOSTNAMES",
+    "ANALYZE",
+    "AWAITING_PAYMENT_EMAIL_DELAY_MINUTES",
+    "API_KEY_PREFIX",
+    "ATOMS_E2E_API_URL",
+    "ATOMS_E2E_OAUTH_CLIENT_ID",
+    "ATOMS_E2E_OAUTH_CLIENT_ID_BOOKER_EMBED",
+    "ATOMS_E2E_OAUTH_CLIENT_SECRET",
+    "ATOMS_E2E_ORG_ID",
+    "AXIOM_TOKEN",
+    "AXIOM_DATASET",
+    "BASECAMP3_CLIENT_ID",
+    "BASECAMP3_CLIENT_SECRET",
+    "BASECAMP3_USER_AGENT",
+    "BLACKLISTED_GUEST_EMAILS",
+    "AUTH_BEARER_TOKEN_HOSTING",
+    "BUILD_ID",
+    "CAL_AI_CALL_RATE_PER_MINUTE",
+    "CAL_SIGNATURE_TOKEN",
+    "SCHEDULING_PRIVATE_API_ROUTE",
+    "SCHEDULING_APP_CREDENTIAL_ENCRYPTION_KEY",
+    "SCHEDULING_CREDENTIAL_SYNC_ENDPOINT",
+    "SCHEDULING_CREDENTIAL_SYNC_SECRET",
+    "SCHEDULING_ENV",
+    "SCHEDULING_LICENSE_KEY",
+    "SCHEDULING_QA_EMAIL",
+    "SCHEDULING_QA_PASSWORD",
+    "SCHEDULING_TELEMETRY_DISABLED",
+    "SCHEDULING_CREDENTIAL_SYNC_HEADER_NAME",
+    "SCHEDULING_ENCRYPTION_KEY",
+    "CI",
+    "CLOSECOM_CLIENT_ID",
+    "CLOSECOM_CLIENT_SECRET",
+    "CRON_API_KEY",
+    "CRON_SECRET",
+    "CRON_ENABLE_APP_SYNC",
+    "DAILY_API_KEY",
+    "DAILY_SCALE_PLAN",
+    "DAILY_WEBHOOK_SECRET",
+    "DAILY_MEETING_ENDED_WEBHOOK_SECRET",
+    "DAILY_VIDEO_REGION",
+    "DATABASE_CHUNK_SIZE",
+    "DATABASE_DIRECT_URL",
+    "DATABASE_URL",
+    "DEBUG",
+    "DUB_API_KEY",
+    "NEXT_PUBLIC_DUB_PROGRAM_ID",
+    "NEXT_PUBLIC_HOSTING_USE_BOTID_IN_BOOKER",
+    "E2E_TEST_APPLE_CALENDAR_EMAIL",
+    "E2E_TEST_APPLE_CALENDAR_PASSWORD",
+    "E2E_TEST_SCHEDULING_QA_EMAIL",
+    "E2E_TEST_SCHEDULING_QA_PASSWORD",
+    "E2E_TEST_SCHEDULING_QA_GCAL_CREDENTIALS",
+    "E2E_TEST_SCHEDULING_GCAL_KEYS",
+    "E2E_TEST_MAILHOG_ENABLED",
+    "E2E_TEST_OIDC_CLIENT_ID",
+    "E2E_TEST_OIDC_CLIENT_SECRET",
+    "E2E_TEST_OIDC_PROVIDER_DOMAIN",
+    "E2E_TEST_OIDC_USER_EMAIL",
+    "E2E_TEST_OIDC_USER_PASSWORD",
+    "E2E_TEST_SAML_ADMIN_EMAIL",
+    "E2E_TEST_SAML_ADMIN_PASSWORD",
+    "EMAIL_FROM",
+    "EMAIL_FROM_NAME",
+    "EMAIL_SERVER_HOST",
+    "EMAIL_SERVER_PASSWORD",
+    "EMAIL_SERVER_PORT",
+    "EMAIL_SERVER_USER",
+    "EMAIL_SERVER",
+    "EXCHANGE_DEFAULT_EWS_URL",
+    "FEEDBACK_FEEDBACK_SURVEY_ID",
+    "MEDIA_API_KEY",
+    "GOOGLE_API_CREDENTIALS",
+    "GOOGLE_CALENDAR_API_KEY",
+    "GOOGLE_LOGIN_ENABLED",
+    "GOOGLE_WEBHOOK_TOKEN",
+    "GOOGLE_WEBHOOK_URL",
+    "HEROKU_APP_NAME",
+    "CONTACT_ARCHIVE_CLIENT_ID",
+    "CONTACT_ARCHIVE_CLIENT_SECRET",
+    "IFFY_API_KEY",
+    "INTEGRATION_TEST_MODE",
+    "INTEGRATION_TESTS",
+    "SUPPORT_SECRET",
+    "INSIGHTS_DATABASE_URL",
+    "IP_BANLIST",
+    "LARK_OPEN_APP_ID",
+    "LARK_OPEN_APP_SECRET",
+    "LARK_OPEN_VERIFICATION_TOKEN",
+    "MOCK_PAYMENT_APP_ENABLED",
+    "MS_GRAPH_CLIENT_ID",
+    "MS_GRAPH_CLIENT_SECRET",
+    "NEXT_PUBLIC_APP_NAME",
+    "NEXT_PUBLIC_SCHEDULING_VERSION",
+    "NEXT_PUBLIC_COMPANY_NAME",
+    "NEXT_PUBLIC_LOGGER_LEVEL",
+    "NEXT_PUBLIC_DISABLE_SIGNUP",
+    "NEXT_PUBLIC_EMBED_LIB_URL",
+    "NEXT_PUBLIC_FEEDBACK_HOST_URL",
+    "NEXT_PUBLIC_FEEDBACK_ENVIRONMENT_ID",
+    "NEXT_PUBLIC_HOSTED_CAL_FEATURES",
+    "NEXT_PUBLIC_IS_E2E",
+    "IS_E2E",
+    "NEXT_PUBLIC_MINUTES_TO_BOOK",
+    "NEXT_PUBLIC_ORG_SELF_SERVE_ENABLED",
+    "NEXT_PUBLIC_SENDER_ID",
+    "NEXT_PUBLIC_TRACING_DSN",
+    "NEXT_PUBLIC_TRACING_DSN_CLIENT",
+    "ORG_MONTHLY_CREDITS",
+    "NEXT_PUBLIC_BOOKER_NUMBER_OF_DAYS_TO_LOAD",
+    "NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS",
+    "NEXT_PUBLIC_TEAM_IMPERSONATION",
+    "NEXT_PUBLIC_HOSTING_URL",
+    "NEXT_PUBLIC_CAL_AI_PHONE_NUMBER_MONTHLY_PRICE",
+    "NEXT_PUBLIC_ORGANIZATIONS_SELF_SERVE_PRICE_NEW",
+    "NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL",
+    "NEXT_PUBLIC_WEBSITE_TERMS_URL",
+    "NEXT_PUBLIC_AVAILABILITY_SCHEDULE_INTERVAL",
+    "NEXT_RUNTIME",
+    "NEXTAUTH_COOKIE_DOMAIN",
+    "NEXTAUTH_SECRET",
+    "NEXTAUTH_URL",
+    "NODE_ENV",
+    "ORGANIZATIONS_ENABLED",
+    "ORGANIZATIONS_AUTOLINK",
+    "PAYMENT_FEE_FIXED",
+    "PAYMENT_FEE_PERCENTAGE",
+    "PLAYWRIGHT_HEADLESS",
+    "PLAYWRIGHT_TEST_BASE_URL",
+    "PROJECT_ID_HOSTING",
+    "QUICK",
+    "RAILWAY_STATIC_URL",
+    "RENDER_EXTERNAL_URL",
+    "RESERVED_SUBDOMAINS",
+    "CONTACT_RECORD_CONSUMER_KEY",
+    "CONTACT_RECORD_CONSUMER_SECRET",
+    "CONTACT_RECORD_GRAPHQL_DELAY_MS",
+    "CONTACT_RECORD_GRAPHQL_MAX_DELAY_MS",
+    "CONTACT_RECORD_GRAPHQL_MAX_RETRIES",
+    "SAML_ADMINS",
+    "SAML_CLIENT_SECRET_VERIFIER",
+    "SAML_DATABASE_URL",
+    "SEND_FEEDBACK_EMAIL",
+    "TRACING_SAMPLE_RATE",
+    "TRACING_TRACES_SAMPLE_RATE",
+    "TRACING_DEBUG",
+    "SKIP_DB_MIGRATIONS",
+    "SLACK_CLIENT_ID",
+    "SLACK_CLIENT_SECRET",
+    "SLACK_SIGNING_SECRET",
+    "TANDEM_BASE_URL",
+    "TANDEM_CLIENT_ID",
+    "TANDEM_CLIENT_SECRET",
+    "TASKER_ENABLE_WEBHOOKS",
+    "TEAM_ID_HOSTING",
+    "TELEMETRY_DEBUG",
+    "TEXT_MESSAGE_MESSAGING_SID",
+    "TEXT_MESSAGE_OPT_OUT_ENABLED",
+    "TEXT_MESSAGE_PHONE_NUMBER",
+    "TEXT_MESSAGE_WHATSAPP_PHONE_NUMBER",
+    "TEXT_MESSAGE_SID",
+    "TEXT_MESSAGE_TOKEN",
+    "TEXT_MESSAGE_VERIFY_SID",
+    "TEXT_MESSAGE_WHATSAPP_REMINDER_CONTENT_SID",
+    "TEXT_MESSAGE_WHATSAPP_CANCELLED_CONTENT_SID",
+    "TEXT_MESSAGE_WHATSAPP_RESCHEDULED_CONTENT_SID",
+    "TEXT_MESSAGE_WHATSAPP_COMPLETED_CONTENT_SID",
+    "USERNAME_BLACKLIST_URL",
+    "HOSTING_ENV",
+    "HOSTING_URL",
+    "VITAL_API_KEY",
+    "VITAL_DEVELOPMENT_MODE",
+    "VITAL_REGION",
+    "VITAL_WEBHOOK_SECRET",
+    "ZAPIER_INVITE_LINK",
+    "ZOHOCRM_CLIENT_ID",
+    "ZOHOCRM_CLIENT_SECRET",
+    "RESEND_API_KEY",
+    "LOCAL_TESTING_DOMAIN_HOSTING",
+    "EMBED_PUBLIC_EMBED_FINGER_PRINT",
+    "EMBED_PUBLIC_EMBED_VERSION",
+    "EMBED_PUBLIC_WEBAPP_URL",
+    "EMBED_PUBLIC_HOSTING_URL",
+    "EMBED_PUBLIC_EMBED_LIB_URL",
+    "NEXT_PUBLIC_ENABLE_PROFILE_SWITCHER",
+    "NEXT_PUBLIC_QUERY_AVAILABLE_SLOTS_INTERVAL_SECONDS",
+    "NEXT_PUBLIC_QUERY_RESERVATION_INTERVAL_SECONDS",
+    "NEXT_PUBLIC_QUERY_RESERVATION_STALE_TIME_SECONDS",
+    "NEXT_PUBLIC_INVALIDATE_AVAILABLE_SLOTS_ON_BOOKING_FORM",
+    "NEXT_PUBLIC_QUICK_AVAILABILITY_ROLLOUT",
+    "NEXT_PUBLIC_HEAD_SCRIPTS",
+    "NEXT_PUBLIC_BODY_SCRIPTS",
+    "NEXT_PUBLIC_API_V2_ROOT_URL",
+    "NEXT_PUBLIC_VAPID_PUBLIC_KEY",
+    "VAPID_PRIVATE_KEY",
+    "CAL_VIDEO_BUCKET_NAME",
+    "CAL_VIDEO_BUCKET_REGION",
+    "CAL_VIDEO_ASSUME_ROLE_ARN",
+    "CAL_VIDEO_MEETING_LINK_FOR_TESTING",
+    "NEXT_PUBLIC_METRICS_KEY",
+    "NEXT_PUBLIC_METRICS_HOST",
+    "HUDDLE01_API_TOKEN",
+    "LINGO_DOT_DEV_API_KEY",
+    "DIRECTORY_IDS_TO_LOG",
+    "NEXT_PUBLIC_SINGLE_ORG_SLUG",
+    "GOOGLE_REFRESH_TOKEN",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "SCHEDULING_ADMIN_API_KEY",
+    "NEXT_PUBLIC_SINGLE_ORG_MODE_ENABLED",
+    "SCHEDULING_SERVICE_ACCOUNT_ENCRYPTION_KEY",
+    "OUTLOOK_LOGIN_ENABLED",
+    "CAL_VIDEO_RECORDING_TOKEN_SECRET",
+    "ORGANIZER_EMAIL_EXEMPT_DOMAINS",
+    "SLOTS_CACHE_TTL",
+    "CSP_POLICY",
+    "NEXT_PUBLIC_API_V2_URL",
+    "NEXT_PUBLIC_WEBAPP_URL",
+    "NEXT_PUBLIC_WEBSITE_URL",
+    "BUILD_STANDALONE",
+    "ATOMS_E2E_APPLE_ID",
+    "ATOMS_E2E_APPLE_CONNECT_APP_SPECIFIC_PASSCODE",
+    "SUPPORT_API_TOKEN",
+    "NEXT_PUBLIC_SUPPORT_APP_ID",
+    "MICROSOFT_WEBHOOK_TOKEN",
+    "MICROSOFT_WEBHOOK_URL",
+    "_CAL_INTERNAL_PAST_BOOKING_RESCHEDULE_CHANGE_TEAM_IDS",
+    "ENTERPRISE_SLUGS",
+    "PLATFORM_ENTERPRISE_SLUGS",
+    "USE_POOL",
+    "TRIGGER_SECRET_KEY",
+    "TRIGGER_API_URL",
+    "TRIGGER_DEV_PROJECT_REF",
+    "TRIGGER_DEV_HOSTING_ACCESS_TOKEN",
+    "TRIGGER_DEV_HOSTING_PROJECT_ID",
+    "TRIGGER_DEV_HOSTING_TEAM_ID",
+    "ENABLE_ASYNC_TASKER",
+    "GOOGLE_ADS_ENABLED",
+    "LINKEDIN_ADS_ENABLED",
+    "SEED_PLATFORM_OAUTH_CLIENT_ID",
+    "SEED_PLATFORM_OAUTH_CLIENT_SECRET",
+    "API_PORT",
+    "API_ENV",
+    "API_URL",
+    "DATABASE_WRITE_URL",
+    "JWT_SECRET",
+    "DOCS_URL",
+    "DATABASE_READ_URL",
+    "GET_LICENSE_KEY_URL",
+    "LOG_LEVEL",
+    "RATE_LIMIT_DEFAULT_TTL_MS",
+    "NEXTAUTH_SECRET_BACKUP",
+    "RATE_LIMIT_DEFAULT_LIMIT_ACCESS_TOKEN",
+    "RATE_LIMIT_DEFAULT_LIMIT",
+    "RATE_LIMIT_DEFAULT_LIMIT_API_KEY",
+    "RATE_LIMIT_DEFAULT_LIMIT_OAUTH_CLIENT",
+    "REPLEXICA_API_KEY",
+    "SLOTS_WORKER_POOL_SIZE",
+    "WEB_APP_URL",
+    "REDIS_URL",
+    "ENABLE_SLOTS_WORKERS",
+    "B2_APPLICATION_KEY_ID",
+    "B2_APPLICATION_KEY",
+    "B2_BUCKET_ID",
+    "B2_BUCKET_NAME"
+  ],
+  "tasks": {
+    "@scheduling/web#copy-app-store-static": {
+      "inputs": [
+        "../../packages/app-store/**/static/**/*"
+      ],
+      "outputLogs": "new-only",
+      "outputs": [
+        "public/app-store/**"
+      ]
+    },
+    "@scheduling/prisma#build": {
+      "cache": false,
+      "dependsOn": [
+        "post-install"
+      ]
+    },
+    "@scheduling/prisma#db-migrate": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/prisma#db-up"
+      ],
+      "inputs": [
+        "./schema.prisma",
+        "./migrations/**/*.sql"
+      ]
+    },
+    "@scheduling/prisma#db-seed": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/prisma#db-deploy"
+      ]
+    },
+    "@scheduling/prisma#db-up": {
+      "cache": false
+    },
+    "@scheduling/prisma#dx": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/prisma#db-up"
+      ]
+    },
+    "@scheduling/app-store#build:types": {
+      "outputs": [
+        "types/**"
+      ]
+    },
+    "@scheduling/trpc#build": {
+      "dependsOn": [
+        "@scheduling/prisma#post-install"
+      ],
+      "outputs": [
+        "./types"
+      ]
+    },
+    "@scheduling/web#build": {
+      "dependsOn": [
+        "^build",
+        "copy-app-store-static"
+      ],
+      "outputs": [
+        ".next/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_AVAILABILITY_SCHEDULE_INTERVAL",
+        "NEXT_PUBLIC_BOOKER_NUMBER_OF_DAYS_TO_LOAD",
+        "NEXT_PUBLIC_CAL_AI_PHONE_NUMBER_MONTHLY_PRICE",
+        "NEXT_PUBLIC_IS_E2E",
+        "NEXT_PUBLIC_TRACING_DSN",
+        "NEXT_PUBLIC_TRACING_DSN_CLIENT",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_PREMIUM_PLAN_PRICE_MONTHLY",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_PREMIUM_PLAN_PRODUCT_ID",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_PUBLIC_KEY",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_TEAM_MONTHLY_PRICE_ID",
+        "LEGACY_PAYMENT_PHONE_NUMBER_MONTHLY_PRICE_ID",
+        "NEXT_PUBLIC_WEBAPP_URL",
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "TRACING_AUTH_TOKEN",
+        "TRACING_DEBUG",
+        "TRACING_MAX_SPANS",
+        "TRACING_ORG",
+        "TRACING_PROJECT",
+        "TRACING_SAMPLE_RATE",
+        "TRACING_TRACES_SAMPLE_RATE",
+        "TRACING_REPLAYS_SESSION_SAMPLE_RATE",
+        "TRACING_REPLAYS_ON_ERROR_SAMPLE_RATE",
+        "LEGACY_PAYMENT_TEAM_MONTHLY_PRICE_ID",
+        "LEGACY_PAYMENT_TEAM_ANNUAL_PRICE_ID",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_CREDITS_PRICE_ID",
+        "LEGACY_PAYMENT_TEAM_PRODUCT_ID",
+        "ORG_MONTHLY_CREDITS",
+        "LEGACY_PAYMENT_ORG_MONTHLY_PRICE_ID",
+        "LEGACY_PAYMENT_ORG_ANNUAL_PRICE_ID",
+        "LEGACY_PAYMENT_ORG_PRODUCT_ID",
+        "LEGACY_PAYMENT_ORG_TRIAL_DAYS",
+        "NEXT_PUBLIC_API_V2_URL",
+        "NEXT_PUBLIC_VAPID_PUBLIC_KEY",
+        "NEXT_PUBLIC_TRACING_DSN_CLIENT",
+        "BUILD_STANDALONE",
+        "NEXT_PUBLIC_API_HITPAY_PRODUCTION",
+        "NEXT_PUBLIC_API_HITPAY_SANDBOX",
+        "TRIGGER_VERSION"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production"
+      ]
+    },
+    "@scheduling/web#dx": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/prisma#dx"
+      ]
+    },
+    "@scheduling/web#start": {
+      "cache": false,
+      "dependsOn": []
+    },
+    "@scheduling/atoms#build-npm": {
+      "outputs": [
+        "dist/**",
+        "globals.min.css"
+      ]
+    },
+    "@scheduling/ai#build": {
+      "env": [
+        "FRONTEND_URL",
+        "BACKEND_URL",
+        "APP_ID",
+        "APP_URL",
+        "SENDER_DOMAIN",
+        "PARSE_KEY",
+        "NODE_ENV",
+        "OPENAI_API_KEY",
+        "DATABASE_URL"
+      ]
+    },
+    "@scheduling/website#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**"
+      ],
+      "env": [
+        "CSP_POLICY",
+        "DATABASE_URL",
+        "DATOCMS_API_TOKEN",
+        "DATOCMS_GRAPHQL_ENDPOINT",
+        "DATOCMS_WEBHOOK_SECRET",
+        "DATOCMS_PREVIEW_SECRET",
+        "ENVIRONMENT_URL",
+        "NEXT_PUBLIC_AVAILABILITY_SCHEDULE_INTERVAL",
+        "NEXT_PUBLIC_IS_PREMIUM_NEW_PLAN",
+        "NEXT_PUBLIC_LEGACY_PAYMENT_PUBLIC_KEY",
+        "NEXT_PUBLIC_WEBAPP_URL",
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "NEXT_PUBLIC_HOSTING_ENV",
+        "NEXT_PUBLIC_HOSTING_BRANCH_URL",
+        "NEXT_PUBLIC_METRICS_KEY",
+        "NEXT_PUBLIC_METRICS_HOST",
+        "LEGACY_PAYMENT_SUPPORT_TABLE",
+        "MOTIFLAND_REST_ENDPOINT",
+        "MOTIFLAND_DOCS_API_KEY",
+        "MOTIFLAND_DOCS_PROJECT_ID"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
+    },
+    "db-deploy": {
+      "cache": false,
+      "inputs": [
+        "./migrations/**/*.sql",
+        "./prisma/migrations/**/*.sql"
+      ]
+    },
+    "db-seed": {},
+    "deploy": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/web#build"
+      ]
+    },
+    "clean": {
+      "cache": false,
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "@scheduling/web#dev": {
+      "dependsOn": [
+        "//#env-check:common",
+        "//#env-check:app-store"
+      ],
+      "cache": false
+    },
+    "dev": {
+      "dependsOn": [
+        "//#env-check:common",
+        "//#env-check:app-store"
+      ],
+      "cache": false
+    },
+    "dev:trigger": {
+      "inputs": [
+        "./.env"
+      ],
+      "env": [
+        "TRIGGER_DEV_PROJECT_REF"
+      ],
+      "cache": false
+    },
+    "deploy:trigger:prod": {
+      "inputs": [
+        "./.env"
+      ],
+      "env": [
+        "TRIGGER_DEV_PROJECT_REF",
+        "TRIGGER_API_URL",
+        "TRIGGER_SECRET_KEY",
+        "TRIGGER_DEV_HOSTING_ACCESS_TOKEN",
+        "TRIGGER_DEV_HOSTING_PROJECT_ID",
+        "TRIGGER_DEV_HOSTING_TEAM_ID"
+      ],
+      "cache": false
+    },
+    "deploy:trigger:staging": {
+      "inputs": [
+        "./.env"
+      ],
+      "env": [
+        "TRIGGER_DEV_PROJECT_REF",
+        "TRIGGER_API_URL",
+        "TRIGGER_SECRET_KEY",
+        "TRIGGER_DEV_HOSTING_ACCESS_TOKEN",
+        "TRIGGER_DEV_HOSTING_PROJECT_ID",
+        "TRIGGER_DEV_HOSTING_TEAM_ID"
+      ],
+      "cache": false
+    },
+    "dx": {
+      "dependsOn": [
+        "//#env-check:common",
+        "//#env-check:app-store"
+      ],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "lint:report": {
+      "outputs": [
+        "lint-results"
+      ]
+    },
+    "post-install": {
+      "dependsOn": [],
+      "outputs": [
+        "../../node_modules/@prisma/client/**",
+        "../../node_modules/@prisma/admin-client/**"
+      ],
+      "inputs": [
+        "./schema.prisma",
+        "./prisma/schema.prisma"
+      ],
+      "env": [
+        "PRISMA_GENERATE_DATAPROXY"
+      ]
+    },
+    "@scheduling/prisma#post-install": {
+      "cache": false,
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "start": {
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "embed-tests": {
+      "cache": false,
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "embed-tests-quick": {
+      "cache": false,
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "type-check": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/trpc#build"
+      ]
+    },
+    "type-check:ci": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/trpc#build"
+      ]
+    },
+    "@scheduling/prisma#db-reset": {
+      "cache": false,
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "@scheduling/app-store-cli#build": {
+      "inputs": [
+        "../../packages/app-store/**/package.json",
+        "../../packages/app-store/**/config.json",
+        "../../packages/app-store/**/api/**",
+        "../../packages/app-store/**/components/**",
+        "../../packages/app-store/**/lib/**",
+        "../../packages/app-store/**/pages/**",
+        "../../packages/app-store-cli/src/**"
+      ],
+      "outputs": [
+        "../../packages/app-store/*.generated.ts",
+        "../../packages/app-store/*.generated.tsx"
+      ]
+    },
+    "@scheduling/embed-react#type-check": {
+      "dependsOn": [
+        "@scheduling/embed-core#build",
+        "@scheduling/embed-snippet#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "@scheduling/embed-core#build": {
+      "cache": false,
+      "outputs": [
+        "../../../apps/web/public/embed/**"
+      ],
+      "env": [
+        "EMBED_PUBLIC_HOSTING_URL",
+        "EMBED_PUBLIC_WEBAPP_URL",
+        "EMBED_PUBLIC_EMBED_FINGER_PRINT",
+        "EMBED_PUBLIC_EMBED_VERSION"
+      ]
+    },
+    "embed-tests-update-snapshots:ci": {
+      "cache": false,
+      "dependsOn": [
+        "@scheduling/prisma#db-seed",
+        "@scheduling/web#build",
+        "^build",
+        "^embed-tests-update-snapshots:ci"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "//#env-check:common": {
+      "cache": false,
+      "inputs": [
+        "./.env.example",
+        "./.env"
+      ],
+      "outputs": [
+        "./.env"
+      ]
+    },
+    "//#env-check:app-store": {
+      "cache": false,
+      "inputs": [
+        "./.env.appStore.example",
+        "./.env.appStore"
+      ],
+      "outputs": [
+        "./.env.appStore"
+      ]
+    },
+    "//#test": {
+      "cache": false
+    }
+  }
+}

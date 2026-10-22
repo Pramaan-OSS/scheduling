@@ -1,0 +1,9 @@
+undecided:
+  - scheduling-monorepo
+  - "@scheduling/api-v2"
+  - "@scheduling/app-store-cli"
+  - "@scheduling/platform-constants"
+  - "@scheduling/platform-enums"
+  - "@scheduling/platform-types"
+  - "@scheduling/platform-utils"
+  - "@scheduling/prisma"

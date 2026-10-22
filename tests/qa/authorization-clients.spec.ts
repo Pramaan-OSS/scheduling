@@ -1,0 +1,22 @@
+import { test, expect } from "@playwright/test";
+test.beforeEach(async ({ context }) => { await context.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort()); });
+test("app-owned authorization client create, edit and delete", async ({ page }) => {
+  const name = `QA client ${Date.now()}`;
+  await page.goto("/settings/developer/oauth");
+  await page.getByRole("button", { name: "New", exact: true }).first().click();
+  const form = page.getByTestId("oauth-client-create-form").filter({ visible: true });
+  await form.locator('input[name="name"]').fill(name);
+  await form.locator('textarea[name="purpose"]').fill("Disposable scheduling quality check");
+  await form.locator('input[name="redirectUri"]').fill("https://client.example.test/callback");
+  await form.locator('input[name="websiteUrl"]').fill("https://client.example.test");
+  await page.getByTestId("oauth-client-create-submit").filter({ visible: true }).click();
+  await expect(page.getByTestId("oauth-client-submitted-modal").filter({ visible: true })).toBeVisible();
+  await page.getByTestId("oauth-client-submitted-done").filter({ visible: true }).click();
+  await page.getByText(name, { exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.locator('input[name="name"]').fill(`${name} edited`);
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByTestId("oauth-client-details-delete-trigger").filter({ visible: true }).click();
+  await page.getByTestId("oauth-client-details-delete-confirm").filter({ visible: true }).click();
+  await expect(page.getByText(`${name} edited`, { exact: true })).toHaveCount(0);
+});

@@ -1,0 +1,97 @@
+import process from "node:process";
+import { getServerSession } from "@scheduling/features/auth/lib/getServerSession";
+import { WEBSITE_URL } from "@scheduling/lib/constants";
+import { getSafeRedirectUrl } from "@scheduling/lib/getSafeRedirectUrl";
+import prisma from "@scheduling/prisma";
+import { hasConnectedSignIn, signInConfiguration } from "@scheduling/features/auth/lib/connected-signin";
+import { WEBAPP_URL } from "@scheduling/lib/constants";
+import { managedSettings } from "@scheduling/features/auth/lib/managed-signin";
+import { jwtVerify } from "jose";
+import type { GetServerSidePropsContext } from "next";
+import { getCsrfToken } from "next-auth/react";
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req, query } = context;
+
+  const session = await getServerSession({ req });
+
+  const verifyJwt = (jwt: string) => {
+    const secret = new TextEncoder().encode(process.env.SCHEDULING_ENCRYPTION_KEY);
+
+    return jwtVerify(jwt, secret, {
+      issuer: WEBSITE_URL,
+      audience: `${WEBSITE_URL}/auth/login`,
+      algorithms: ["HS256"],
+    });
+  };
+
+  let totpEmail = null;
+  if (context.query.totp) {
+    try {
+      const decryptedJwt = await verifyJwt(context.query.totp as string);
+      if (decryptedJwt.payload) {
+        totpEmail = decryptedJwt.payload.email as string;
+      } else {
+        return {
+          redirect: {
+            destination: "/auth/error?error=JWT%20Invalid%20Payload",
+            permanent: false,
+          },
+        };
+      }
+    } catch {
+      return {
+        redirect: {
+          destination: "/auth/error?error=Invalid%20JWT%3A%20Please%20try%20again",
+          permanent: false,
+        },
+      };
+    }
+  }
+
+  if (session) {
+    const { callbackUrl } = query;
+
+    if (callbackUrl) {
+      try {
+        const destination = getSafeRedirectUrl(callbackUrl as string);
+        if (destination) {
+          return {
+            redirect: {
+              destination,
+              permanent: false,
+            },
+          };
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  const userExists = await prisma.user.findFirst({ select: { id: true } });
+  if (!userExists && !managedSettings()) {
+    // Proceed to new onboarding to create first admin user
+    return {
+      redirect: {
+        destination: "/auth/setup",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+      isConnectedLoginEnabled: hasConnectedSignIn(signInConfiguration(WEBAPP_URL)),
+      needsAdministratorSetup: !userExists,
+      totpEmail,
+    },
+  };
+}

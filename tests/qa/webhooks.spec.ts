@@ -1,0 +1,24 @@
+import { test, expect } from "@playwright/test";
+test.beforeEach(async ({ context }) => { await context.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort()); });
+test("webhook create, edit and delete without sending an outside request", async ({ page }) => {
+  const url = `https://hooks.example.test/scheduling-${Date.now()}`;
+  await page.goto("/settings/developer/webhooks/new");
+  await expect(page.locator('a[href^="/docs/"]')).toHaveCount(0);
+  await page.getByRole("switch", { name: "Enable webhook", exact: true }).uncheck();
+  await page.getByRole("textbox", { name: "Subscriber URL", exact: true }).fill(url);
+  const created = page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname.includes("webhook/create"));
+  await page.getByTestId("create_webhook").filter({ visible: true }).click();
+  expect((await created).ok()).toBe(true);
+  await expect(page).toHaveURL(/settings\/developer\/webhooks$/);
+  await page.getByText(url, { exact: true }).click();
+  await page.getByRole("textbox", { name: "Subscriber URL", exact: true }).fill(`${url}-edited`);
+  await Promise.all([page.waitForResponse(r => r.request().method() === "POST" && r.url().includes("webhook")), page.getByTestId("create_webhook").filter({ visible: true }).click()]);
+  await page.reload();
+  await expect(page.getByRole("textbox", { name: "Subscriber URL", exact: true })).toHaveValue(`${url}-edited`);
+  await page.goto("/settings/developer/webhooks");
+  await expect(page.locator('a[href*="/docs/developing"]')).toHaveCount(0);
+  const row = page.getByText(`${url}-edited`, { exact: true }).locator('xpath=ancestor::*[@data-testid="webhook-list-item"][1]');
+  await row.getByRole("button", { name: "Delete", exact: true }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Delete webhook", exact: true }).click();
+  await expect(page.getByText(`${url}-edited`, { exact: true })).toHaveCount(0);
+});

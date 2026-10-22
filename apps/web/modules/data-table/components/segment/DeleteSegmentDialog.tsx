@@ -1,0 +1,46 @@
+import type { FilterSegmentOutput } from "@scheduling/features/data-table/lib/types";
+import { useLocale } from "@scheduling/lib/hooks/useLocale";
+import { trpc } from "@scheduling/trpc/react";
+import { ConfirmationDialogContent, Dialog } from "@scheduling/ui/components/dialog";
+import { showToast } from "@scheduling/ui/components/toast";
+import { useDataTable } from "~/data-table/hooks";
+
+export function DeleteSegmentDialog({
+  segment,
+  onClose,
+}: {
+  segment: FilterSegmentOutput;
+  onClose: () => void;
+}) {
+  const { t } = useLocale();
+  const utils = trpc.useUtils();
+  const { segmentId, setSegmentId } = useDataTable();
+
+  const deleteSegment = { mutate: (_args: Record<string, unknown>) => {}, isPending: false };
+  const isPending = deleteSegment.isPending;
+
+  const handleDelete = () => {
+    if (!segment) return;
+    deleteSegment.mutate({ id: segment.id });
+  };
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}>
+      <ConfirmationDialogContent
+        variety="danger"
+        title={t("delete_segment")}
+        confirmBtnText={t("delete")}
+        cancelBtnText={t("cancel")}
+        isPending={isPending}
+        onConfirm={handleDelete}>
+        <p className="mt-5">{t("delete_segment_confirmation")}</p>
+      </ConfirmationDialogContent>
+    </Dialog>
+  );
+}

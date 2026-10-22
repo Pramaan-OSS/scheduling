@@ -1,0 +1,19 @@
+{
+  "/*": "Don't modify slug - If required, do it using cli edit command",
+  "name": "Weather calendar",
+  "slug": "weather_in_your_calendar",
+  "type": "weather_in_your_calendar_other",
+  "logo": "icon.svg",
+  "url": "",
+  "variant": "other",
+  "categories": [
+    "other"
+  ],
+  "publisher": "Scheduling",
+  "email": "",
+  "description": "Download a seven-day forecast snapshot for a city. Refresh it manually.",
+  "__createdUsingCli": true,
+  "isOAuth": false,
+  "title": "Weather calendar",
+  "installed": true
+}

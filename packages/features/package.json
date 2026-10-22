@@ -1,0 +1,51 @@
+{
+  "name": "@scheduling/features",
+  "sideEffects": false,
+  "private": true,
+  "description": "Scheduling's main collocation of features",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "lint": "biome lint ."
+  },
+  "dependencies": {
+    "@coss/ui": "workspace:*",
+    "@evyweb/ioctopus": "1.2.0",
+    "@scheduling/atoms": "workspace:*",
+    "@scheduling/dayjs": "workspace:*",
+    "@scheduling/i18n": "workspace:*",
+    "@scheduling/lib": "workspace:*",
+    "@scheduling/trpc": "workspace:*",
+    "@scheduling/ui": "workspace:*",
+    "@tanstack/react-table": "8.20.6",
+    "@tanstack/react-virtual": "3.10.9",
+    "city-timezones": "1.2.1",
+    "class-variance-authority": "0.7.1",
+    "date-fns-tz": "3.2.0",
+    "deasync": "^0.1.31",
+    "framer-motion": "10.12.8",
+    "jsonwebtoken": "9.0.2",
+    "p-limit": "6.2.0",
+    "react-select": "5.8.0",
+    "react-sticky-box": "2.0.4",
+    "recharts": "3.0.2",
+    "redis": "4.7.0",
+    "web-push": "3.6.7",
+    "zustand": "4.5.2"
+  },
+  "peerDependencies": {
+    "next": ">=14.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-is": "^18.2.0",
+    "zod": "^3.0.0"
+  },
+  "devDependencies": {
+    "@scheduling/testing": "workspace:*",
+    "@testing-library/react-hooks": "8.0.1",
+    "@types/deasync": "^0",
+    "@types/jsonwebtoken": "9.0.7",
+    "@types/web-push": "3.6.3"
+  },
+  "license": "AGPL-3.0"
+}

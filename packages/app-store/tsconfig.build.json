@@ -1,0 +1,37 @@
+{
+  "extends": "@scheduling/tsconfig/react-library.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "types",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["../../apps/web/components/*"],
+      "@lib/*": ["../../apps/web/lib/*"],
+      "@prisma/client/*": ["@scheduling/prisma/client/*"]
+    },
+    "resolveJsonModule": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "@scheduling/types",
+    "../types/*.d.ts",
+    "../types/next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "dist",
+    "types",
+    "build",
+    "**/node_modules/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/tests/**"
+  ]
+}

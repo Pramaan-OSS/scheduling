@@ -1,0 +1,13 @@
+{
+  "name": "@scheduling/kysely",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "kysely": "0.28.14",
+    "pg": "8.16.0"
+  },
+  "devDependencies": {
+    "@types/pg": "8.11.14"
+  },
+  "license": "AGPL-3.0"
+}

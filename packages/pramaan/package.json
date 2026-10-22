@@ -1,0 +1,25 @@
+{
+  "name": "@scheduling/pramaan",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fake": "./src/fake.ts",
+    "./schemas": "./src/schemas.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "5.9.2"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@pramaan/sdk": "0.1.0"
+  }
+}

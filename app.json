@@ -1,0 +1,75 @@
+{
+  "name": "Scheduling",
+  "description": "Open Source Scheduling",
+  "logo": "/scheduling-icon.svg",
+  "keywords": [
+    "react",
+    "typescript",
+    "node",
+    "nextjs",
+    "prisma",
+    "postgres",
+    "trpc"
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini"
+    }
+  ],
+  "env": {
+    "PGSSLMODE": {
+      "description": "If you use Heroku to deploy Postgres (or use self-signed certs for Postgres) then put 'no-verify' here.",
+      "value": "no-verify"
+    },
+    "NEXT_PUBLIC_WEBAPP_URL": {
+      "description": "Replace HEROKU_APP_NAME with the name given to your app",
+      "value": "https://HEROKU_APP_NAME.herokuapp.com",
+      "required": "true"
+    },
+    "SCHEDULING_ENCRYPTION_KEY": {
+      "description": "Application Key for symmetric encryption and decryption. Must be 32 bytes for AES256 encryption algorithm.",
+      "required": "true",
+      "generator": "secret"
+    },
+    "NEXTAUTH_URL": {
+      "description": "Replace HEROKU_APP_NAME with the name given to your app",
+      "value": "https://HEROKU_APP_NAME.herokuapp.com"
+    },
+    "NEXTAUTH_SECRET": {
+      "description": "Cookie encryption key",
+      "generator": "secret",
+      "required": "true"
+    },
+    "CRON_API_KEY": {
+      "description": "ApiKey for cronjobs",
+      "value": ""
+    },
+    "CRON_ENABLE_APP_SYNC": {
+      "description": "Whether to automatically keep app metadata in the database in sync with the metadata/config files. When disabled, the sync runs in a reporting-only dry-run mode.",
+      "value": "false"
+    },
+    "SEND_FEEDBACK_EMAIL": {
+      "description": "Send feedback email",
+      "value": ""
+    },
+    "EMAIL_FROM": {
+      "description": "Configures the global From: header whilst sending emails",
+      "value": ""
+    },
+    "NEXT_PUBLIC_AVAILABILITY_SCHEDULE_INTERVAL": {
+      "description": "Control time intervals on a user's Schedule availability",
+      "value": "15"
+    },
+    "PRAMAAN_API_KEY": {
+      "description": "Optional key for outside actions. Keep it private.",
+      "required": false
+    },
+    "DATABASE_DIRECT_URL": {
+      "description": "Direct address of the application-owned PostgreSQL database.",
+      "required": true
+    }
+  },
+  "scripts": {
+    "postdeploy": "cd packages/prisma && npx prisma migrate deploy"
+  }
+}

@@ -1,0 +1,55 @@
+declare namespace NodeJS {
+  interface ProcessEnv {
+    readonly SCHEDULING_TELEMETRY_DISABLED: string | undefined;
+    readonly SCHEDULING_ENCRYPTION_KEY: string | undefined;
+    readonly DATABASE_URL: string | undefined;
+    /** @deprecated use `NEXT_PUBLIC_WEBAPP_URL` */
+    readonly BASE_URL: string | undefined;
+    /** @deprecated use `NEXT_PUBLIC_WEBAPP_URL` */
+    readonly NEXT_PUBLIC_BASE_URL: string | undefined;
+    /** @deprecated use `NEXT_PUBLIC_WEBSITE_URL` */
+    readonly NEXT_PUBLIC_APP_URL: string | undefined;
+    readonly NEXTAUTH_SECRET: string | undefined;
+    readonly NEXT_PUBLIC_AVAILABILITY_SCHEDULE_INTERVAL: string | undefined;
+    readonly EMAIL_FROM: string | undefined;
+    readonly EMAIL_FROM_NAME: string | undefined;
+    readonly EMAIL_SERVER_HOST: string | undefined;
+    readonly EMAIL_SERVER_PORT: string | undefined;
+    readonly EMAIL_SERVER_USER: string | undefined;
+    readonly EMAIL_SERVER_PASSWORD: string | undefined;
+    readonly CRON_API_KEY: string | undefined;
+    readonly CRON_ENABLE_APP_SYNC: string | undefined;
+    readonly PAYMENT_FEE_PERCENTAGE: number | undefined;
+    readonly PAYMENT_FEE_FIXED: number | undefined;
+    readonly AWAITING_PAYMENT_EMAIL_DELAY_MINUTES: number | undefined;
+    readonly NEXT_PUBLIC_SUPPORT_APP_ID: string | undefined;
+    readonly WEBSITE_BASE_URL: string | undefined;
+    /** @deprecated use `NEXT_PUBLIC_WEBSITE_URL` */
+    readonly NEXT_PUBLIC_WEBSITE_BASE_URL: string;
+    readonly NEXT_PUBLIC_WEBSITE_URL: string;
+    readonly APP_BASE_URL: string | undefined;
+    /** @deprecated use `NEXT_PUBLIC_WEBAPP_URL` */
+    readonly NEXT_PUBLIC_APP_BASE_URL: string;
+    readonly NEXT_PUBLIC_WEBAPP_URL: string;
+    /** The Environment that the app is deployed an running on. */
+    /** The URL of the deployment. Example: my-site-7q03y4pi5.hosting.app. */
+    /**
+     * Set it to "1" if you need to run E2E tests locally
+     **/
+    readonly NEXT_PUBLIC_IS_E2E: "1" | undefined;
+    /**
+     * This is used so we can enable Mailhog in E2E tests.
+     */
+    readonly E2E_TEST_MAILHOG_ENABLED: "1" | undefined;
+    readonly NEXT_PUBLIC_APP_NAME: string | "Cal";
+    readonly NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS: string | "help@scheduling.local";
+    readonly NEXT_PUBLIC_COMPANY_NAME: string | "Scheduling, Inc.";
+    readonly NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: string | undefined;
+    readonly NEXT_PUBLIC_WEBSITE_TERMS_URL: string | undefined;
+    /**
+     *  "strict" -> Strict CSP
+     *  "non-strict" -> Strict CSP except the usage of unsafe-inline for `style-src`
+     */
+    readonly CSP_POLICY: "strict" | "non-strict";
+  }
+}

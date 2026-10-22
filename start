@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+umask 077
+cd "$(dirname "$0")"
+mkdir -p .runtime
+docker compose run --rm --no-deps init
+port=$(docker compose run --rm --no-deps init node scripts/local-config.mjs --print-port)
+container=$(docker compose ps -q scheduling)
+running=false
+if [ -n "$container" ]; then running=$(docker inspect -f '{{.State.Running}}' "$container"); fi
+if [ "$running" != true ]; then
+  attempts=0
+  while ! probe=$(docker run --rm --detach -p "$port:3000" node:24-bookworm-slim node -e 'setInterval(()=>{},60000)' 2>>.runtime/ports.log); do
+    port=$((port + 1))
+    attempts=$((attempts + 1))
+    if [ "$attempts" -ge 50 ]; then printf '%s\n' 'No local port is available. Stop an unused local service and run ./start again.'; exit 1; fi
+  done
+  docker stop -t 0 "$probe" > /dev/null
+fi
+docker compose run --rm --no-deps init node scripts/local-config.mjs --port "$port"
+# Keep startup and build output local; it can contain infrastructure diagnostics.
+if ! docker compose up --build --detach --wait > .runtime/start.log 2>&1; then
+  printf '%s\n' 'Startup did not complete. See .runtime/start.log and docker compose logs.'
+  exit 1
+fi
+docker compose exec -T scheduling node scripts/startup-summary.mjs
+printf 'Scheduling is running at http://localhost:%s. Open the sign-in page to use managed or local sign-in.\n' "$port"

@@ -1,0 +1,41 @@
+import { test, expect } from "@playwright/test";
+test.beforeEach(async ({ context }) => { await context.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort()); });
+test("built-in apps and owned settings work on fresh and connected sites", async ({ page }) => {
+  const retired: string[] = [];
+  page.on("request", request => { if (new URL(request.url()).pathname.startsWith("/api/integrations/")) retired.push(request.url()); });
+  await page.goto("/apps");
+  await expect(page.getByText("No app has been configured yet", { exact: true })).toHaveCount(0);
+  for (const slug of ["pramaan-calendar", "pramaan-payment", "weather_in_your_calendar"]) {
+    const response = await page.goto(`/apps/${slug}`);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator("body")).not.toContainText("This App seems to be disabled");
+    await expect.poll(() => page.locator('img[src*="/app-store/"]').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  }
+  await page.goto("/apps/pramaan-calendar");
+  await expect(page.getByRole("heading", { name: "Primary calendar", exact: true })).toBeVisible();
+  const install = page.getByTestId("install-app-button").filter({ visible: true }).first();
+  if (await install.count() && await install.isEnabled()) await install.click();
+  else await page.goto("/apps/pramaan-calendar/setup");
+  await expect(page).toHaveURL(/settings\/my-account\/calendars/);
+  await page.goto("/apps/pramaan-calendar/setup");
+  await expect(page).toHaveURL(/settings\/my-account\/calendars/);
+  await expect(page.getByRole("heading", { name: "Calendar availability" })).toBeVisible();
+  await page.getByLabel("Work calendar", { exact: true }).filter({ visible: true }).check();
+  const selected = page.waitForResponse(response => new URL(response.url()).pathname === "/api/primary-calendar" && response.request().method() === "POST");
+  await page.getByRole("button", { name: /^(Connect calendar|Save calendar selection)$/ }).click();
+  expect((await selected).ok()).toBe(true);
+  await page.reload();
+  await expect(page.getByLabel("Work calendar", { exact: true }).filter({ visible: true })).toBeChecked();
+  await page.goto("/apps/pramaan-payment/setup");
+  await expect(page).toHaveURL(/settings\/my-account\/payments/);
+  await page.goto("/apps/weather_in_your_calendar/setup");
+  await expect(page.getByRole("button", { name: "Prepare forecast calendar" })).toBeVisible();
+  await page.getByLabel("City", { exact: true }).filter({ visible: true }).fill("London");
+  await page.getByRole("button", { name: "Prepare forecast calendar", exact: true }).click();
+  const download = page.getByRole("link", { name: "Add forecast to calendar", exact: true });
+  await expect(download).toBeVisible();
+  const file = await page.request.get((await download.getAttribute("href"))!);
+  expect(file.ok()).toBe(true);
+  expect(await file.text()).toContain("BEGIN:VCALENDAR");
+  expect(retired).toEqual([]);
+});

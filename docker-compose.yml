@@ -1,0 +1,65 @@
+services:
+  init:
+    image: node:24-bookworm-slim
+    profiles: [setup]
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    command: [node, scripts/local-config.mjs]
+  database:
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_USER: scheduling
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-bootstrap-only}
+      POSTGRES_DB: scheduling
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U scheduling -d scheduling]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+  redis:
+    image: redis:7-bookworm
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+  scheduling:
+    volumes:
+      - ./.runtime:/scheduling/.runtime
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_WEBAPP_URL: ${NEXT_PUBLIC_WEBAPP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_WEBSITE_URL: ${NEXT_PUBLIC_WEBSITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_WEBSITE_TERMS_URL: ${NEXT_PUBLIC_WEBSITE_TERMS_URL:-}
+        NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: ${NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL:-}
+    ports:
+      - "${SCHEDULING_LOCAL_PORT:-3000}:3000"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://scheduling:${POSTGRES_PASSWORD:-local-bootstrap-only}@database:5432/scheduling
+      DATABASE_DIRECT_URL: postgresql://scheduling:${POSTGRES_PASSWORD:-local-bootstrap-only}@database:5432/scheduling
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      NEXT_PUBLIC_WEBAPP_URL: ${NEXT_PUBLIC_WEBAPP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_WEBSITE_URL: ${NEXT_PUBLIC_WEBSITE_URL:-http://localhost:3000}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000/api/auth}
+      NEXT_TELEMETRY_DISABLED: '1'
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/auth/login').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 10s
+      start_period: 90s
+      retries: 60
+volumes:
+  database-data:
+  redis-data:

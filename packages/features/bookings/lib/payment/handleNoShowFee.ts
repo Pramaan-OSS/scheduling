@@ -1,0 +1,1 @@
+export const handleNoShowFee = async (_input: { booking: unknown; payment: unknown; [key: string]: unknown }): Promise<never> => { throw new Error("Card holds and no-show charges are not available yet."); };

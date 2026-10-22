@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "private": true,
+  "name": "@scheduling/basic",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "dependencies": {
+    "@scheduling/lib": "workspace:*"
+  },
+  "devDependencies": {
+    "@scheduling/types": "workspace:*"
+  },
+  "description": "It is a template for an app that can be installed and provides no other feature.",
+  "license": "AGPL-3.0"
+}

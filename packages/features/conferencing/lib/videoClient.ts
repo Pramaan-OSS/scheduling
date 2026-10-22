@@ -1,0 +1,18 @@
+import type { CalendarEvent } from "@scheduling/types/Calendar";
+import type { VideoCallData } from "@scheduling/types/VideoApiAdapter";
+type RoomResult = { appName: string; type: string; uid: string; originalEvent: CalendarEvent; success: boolean; createdEvent?: VideoCallData; updatedEvent?: VideoCallData; credentialId: number };
+const unavailable = async (..._args: unknown[]): Promise<never> => { throw new Error("Meeting rooms and recordings are not available yet. Paste your meeting link in the location."); };
+export const createMeeting: (...args: unknown[]) => Promise<RoomResult> = unavailable;
+export const updateMeeting: (...args: unknown[]) => Promise<RoomResult> = unavailable;
+export const deleteMeeting = unavailable;
+export const createMeetingWithCalVideo = unavailable;
+export const createInstantMeetingWithCalVideo = unavailable;
+export const getRecordingsOfCalVideoByRoomName = unavailable;
+export const getDownloadLinkOfCalVideoByRecordingId = unavailable;
+export const getAllTranscriptsAccessLinkFromRoomName = unavailable;
+export const getAllTranscriptsAccessLinkFromMeetingId = unavailable;
+export const submitBatchProcessorTranscriptionJob = unavailable;
+export const getTranscriptsAccessLinkFromRecordingId = unavailable;
+export const checkIfRoomNameMatchesInRecording = unavailable;
+export const getCalVideoMeetingSessionsByRoomName = unavailable;
+export const getBusyVideoTimes = async (credentials: unknown[]) => { if (credentials.length) await unavailable(); return []; };

@@ -1,0 +1,15 @@
+{
+  "name": "ICS Feed",
+  "title": "ICS Feed",
+  "slug": "ics-feed",
+  "dirName": "ics-feedcalendar",
+  "type": "ics-feed_calendar",
+  "logo": "icon.svg",
+  "variant": "calendar",
+  "categories": ["calendar"],
+  "publisher": "Scheduling, Inc.",
+  "email": "help@scheduling.local",
+  "description": "Import events from an ICS Feed into [Scheduling](https://scheduling.local).",
+  "isTemplate": false,
+  "__createdUsingCli": true
+}

@@ -1,0 +1,767 @@
+import {
+  getBooker,
+  TestData,
+  getOrganizer,
+  createBookingScenario,
+  Timezones,
+  getScenarioData,
+  mockSuccessfulVideoMeetingCreation,
+  BookingLocations,
+  getDate,
+  getGoogleCalendarCredential,
+  getResizeAppCredential,
+  mockCalendarToHaveNoBusySlots,
+} from "@scheduling/testing/lib/bookingScenario/bookingScenario";
+import { expectBookingToBeInDatabase } from "@scheduling/testing/lib/bookingScenario/expects";
+import { getMockRequestDataForBooking } from "@scheduling/testing/lib/bookingScenario/getMockRequestDataForBooking";
+import { setupAndTeardown } from "@scheduling/testing/lib/bookingScenario/setupAndTeardown";
+
+import { describe, test, expect } from "vitest";
+
+import prisma from "@scheduling/prisma";
+import { SchedulingType } from "@scheduling/prisma/enums";
+
+import { getNewBookingHandler } from "./getNewBookingHandler";
+
+describe("Per-Host Locations - handleNewBooking", () => {
+  setupAndTeardown();
+
+  describe("Round-Robin with enablePerHostLocations enabled", () => {
+    test("should use host's Resize credential when host has credentialId", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential(), getResizeAppCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                    credentialId: 2,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"], TestData.apps["resizevideo"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "resizevideo",
+        videoMeetingData: {
+          id: "MOCK_RETIRED_ROOM_ID",
+          password: "MOCK_RETIRED_ROOM_PASS",
+          url: `https://example.test`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      // Per-host location resolution was removed during EE cleanup, so the system falls back to Cal Video
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+
+    test("should use Cal Video when host location is integrations:daily", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "meetinglink",
+        videoMeetingData: {
+          id: "MOCK_DAILY_ID",
+          password: "MOCK_DAILY_PASS",
+          url: `http://mock-dailyvideo.example.com/meeting-1`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+
+    test("should use stored link when host location type is link", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      const customLink = "https://custom-meeting.example.com/room123";
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "link",
+                    link: customLink,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"]],
+        })
+      );
+
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: "link" },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      // Per-host location resolution was removed during EE cleanup, so the location type name is stored as-is
+      expect(createdBooking.location).toBe("link");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "link",
+      });
+    });
+
+    test("should use stored address when host location type is inPerson", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      const officeAddress = "123 Main St, San Francisco, CA 94102";
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "inPerson",
+                    address: officeAddress,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"]],
+        })
+      );
+
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: "inPerson" },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      // Per-host location resolution was removed during EE cleanup, so the location type name is stored as-is
+      expect(createdBooking.location).toBe("inPerson");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "inPerson",
+      });
+    });
+
+    test("should auto-link credential when host has location type but no credential", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential(), getResizeAppCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                    credentialId: null,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"], TestData.apps["resizevideo"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "resizevideo",
+        videoMeetingData: {
+          id: "MOCK_RETIRED_ROOM_ID",
+          password: "MOCK_RETIRED_ROOM_PASS",
+          url: `https://example.test`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      // Per-host location resolution was removed during EE cleanup, so the system falls back to Cal Video
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+
+    test("should fallback to Cal Video when no matching credential found", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                    credentialId: null,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "meetinglink",
+        videoMeetingData: {
+          id: "MOCK_DAILY_ID",
+          password: "MOCK_DAILY_PASS",
+          url: `http://mock-dailyvideo.example.com/meeting-1`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+  });
+
+  describe("Feature flag behavior", () => {
+    test("should ignore per-host locations when enablePerHostLocations is false", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential(), getResizeAppCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.ROUND_ROBIN,
+              length: 30,
+              enablePerHostLocations: false,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: false,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                    credentialId: 2,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"], TestData.apps["resizevideo"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "meetinglink",
+        videoMeetingData: {
+          id: "MOCK_DAILY_ID",
+          password: "MOCK_DAILY_PASS",
+          url: `http://mock-dailyvideo.example.com/meeting-1`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+
+    test("should ignore per-host locations for non-round-robin events", async () => {
+      const handleNewBooking = getNewBookingHandler();
+      const booker = getBooker({
+        email: "booker@example.com",
+        name: "Booker",
+      });
+
+      const organizer = getOrganizer({
+        name: "Organizer",
+        email: "organizer@example.com",
+        id: 101,
+        defaultScheduleId: null,
+        schedules: [TestData.schedules.IstWorkHours],
+        credentials: [getGoogleCalendarCredential(), getResizeAppCredential()],
+        selectedCalendars: [TestData.selectedCalendars.google],
+        destinationCalendar: {
+          integration: TestData.apps["google-calendar"].type,
+          externalId: "organizer@google-calendar.com",
+        },
+      });
+
+      await createBookingScenario(
+        getScenarioData({
+          eventTypes: [
+            {
+              id: 1,
+              slotInterval: 30,
+              schedulingType: SchedulingType.COLLECTIVE,
+              length: 30,
+              enablePerHostLocations: true,
+              users: [{ id: organizer.id }],
+              hosts: [
+                {
+                  userId: organizer.id,
+                  isFixed: true,
+                  location: {
+                    type: "https://meet.example.test/fixture",
+                    credentialId: 2,
+                  },
+                },
+              ],
+              destinationCalendar: {
+                integration: TestData.apps["google-calendar"].type,
+                externalId: "event-type-1@google-calendar.com",
+              },
+            },
+          ],
+          organizer,
+          apps: [TestData.apps["google-calendar"], TestData.apps["daily-video"], TestData.apps["resizevideo"]],
+        })
+      );
+
+      mockSuccessfulVideoMeetingCreation({
+        metadataLookupKey: "meetinglink",
+        videoMeetingData: {
+          id: "MOCK_DAILY_ID",
+          password: "MOCK_DAILY_PASS",
+          url: `http://mock-dailyvideo.example.com/meeting-1`,
+        },
+      });
+      mockCalendarToHaveNoBusySlots("googlecalendar", {
+        create: {
+          id: "MOCKED_GOOGLE_CALENDAR_EVENT_ID",
+          iCalUID: "MOCKED_GOOGLE_CALENDAR_ICS_ID",
+        },
+      });
+
+      const mockBookingData = getMockRequestDataForBooking({
+        data: {
+          start: `${getDate({ dateIncrement: 1 }).dateString}T09:00:00.000Z`,
+          end: `${getDate({ dateIncrement: 1 }).dateString}T09:30:00.000Z`,
+          eventTypeId: 1,
+          responses: {
+            email: booker.email,
+            name: booker.name,
+            location: { optionValue: "", value: BookingLocations.CalVideo },
+          },
+        },
+      });
+
+      const createdBooking = await handleNewBooking({
+        bookingData: mockBookingData,
+      });
+
+      expect(createdBooking).toBeDefined();
+      expect(createdBooking.location).toBe("https://meet.example.test/fixture");
+
+      await expectBookingToBeInDatabase({
+        uid: createdBooking.uid,
+        location: "https://meet.example.test/fixture",
+      });
+    });
+  });
+});

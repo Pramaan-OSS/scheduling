@@ -1,0 +1,1 @@
+declare module "js-yaml" { export const JSON_SCHEMA: unknown; export function load(source: string, options?: { schema?: unknown }): unknown; const yaml: { load: typeof load; JSON_SCHEMA: unknown }; export default yaml; }

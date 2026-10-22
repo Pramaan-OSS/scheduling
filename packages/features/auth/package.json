@@ -1,0 +1,26 @@
+{
+  "name": "@scheduling/feature-auth",
+  "sideEffects": false,
+  "private": true,
+  "description": "Scheduling's main auth code",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@scheduling/dayjs": "workspace:*",
+    "@scheduling/emails": "workspace:*",
+    "@scheduling/i18n": "workspace:*",
+    "@scheduling/lib": "workspace:*",
+    "@scheduling/pramaan": "workspace:*",
+    "@scheduling/prisma": "workspace:*",
+    "@scheduling/trpc": "workspace:*",
+    "@scheduling/ui": "workspace:*",
+    "bcryptjs": "2.4.3",
+    "better-auth": "1.6.23",
+    "handlebars": "4.7.9",
+    "jose": "4.15.9",
+    "lru-cache": "9.0.3",
+    "next-auth": "4.24.13",
+    "otplib": "12.0.1"
+  },
+  "license": "AGPL-3.0"
+}
