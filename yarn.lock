@@ -3838,17 +3838,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pramaan/sdk@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@pramaan/sdk@npm:0.1.0"
-  checksum: 10/bc8d851d3ff4fb2c5dcb37b9f4fb0a513dcc855865f3b58ac04255928ae5ac39593797451fced47a09b2a68cbe7a75ea8593758e0c88fc59e00ae5d89a45d9ab
+"@pramaan/sdk@npm:0.1.4":
+  version: 0.1.4
+  resolution: "@pramaan/sdk@npm:0.1.4"
+  checksum: 10/825f69c170fc0d3560d6e8ed088f582eba5e070bfe8456a80947a59c1165888fe4cc2c1c2dace5f1ca6481efa661c1c847b8f24947f823050956a0b3f66954c2
   languageName: node
   linkType: hard
 
-"@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch":
-  version: 0.1.0
-  resolution: "@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch::version=0.1.0&hash=1b8b12"
-  checksum: 10/c6098ca9cfd2d4f17f0c7f781d7f452031f804607be4de5dc7f7e8653e2161569b6147b18f6992eb6e9c0c4105fbbee1d70295f2b3cf2e8fc562dcd9fdfa2124
+"@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.4#~/.yarn/patches/@pramaan-sdk-npm-0.1.4-3e838bc7c3.patch":
+  version: 0.1.4
+  resolution: "@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.4#~/.yarn/patches/@pramaan-sdk-npm-0.1.4-3e838bc7c3.patch::version=0.1.4&hash=8744db"
+  checksum: 10/94d9ad452ab99dd662f312752b61faeaa49749274ca60315915cbdeb33aa49d1af6142f74dbad511c997499e5abccc48bcb2b71ebdef1c8882cc67f4f93f8e59
   languageName: node
   linkType: hard
 
@@ -6789,7 +6789,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@scheduling/pramaan@workspace:packages/pramaan"
   dependencies:
-    "@pramaan/sdk": "patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch"
+    "@pramaan/sdk": "patch:@pramaan/sdk@npm%3A0.1.4#~/.yarn/patches/@pramaan-sdk-npm-0.1.4-3e838bc7c3.patch"
     "@types/node": "npm:^24.10.1"
     typescript: "npm:5.9.2"
   languageName: unknown

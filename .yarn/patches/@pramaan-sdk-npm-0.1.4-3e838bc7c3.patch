@@ -1,8 +1,8 @@
 diff --git a/package.json b/package.json
-index deecbcaf8430b2d2e5e1057d99e4ece05af8dbec..ad0ace87feabc87ef1d9763adfd973748e3bdd35 100644
+index 695558baa40b27af4460a2a7381c7a7f3cf05203..2b87d7035435ce9c860b813d041109ea0da5f502 100644
 --- a/package.json
 +++ b/package.json
-@@ -32,5 +32,7 @@
+@@ -40,5 +40,7 @@
      "generate": "node scripts/generate.ts",
      "parity": "node parity/parity.ts",
      "parity:server": "node parity/server.ts"
