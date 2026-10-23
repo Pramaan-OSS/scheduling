@@ -3845,6 +3845,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch":
+  version: 0.1.0
+  resolution: "@pramaan/sdk@patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch::version=0.1.0&hash=1b8b12"
+  checksum: 10/c6098ca9cfd2d4f17f0c7f781d7f452031f804607be4de5dc7f7e8653e2161569b6147b18f6992eb6e9c0c4105fbbee1d70295f2b3cf2e8fc562dcd9fdfa2124
+  languageName: node
+  linkType: hard
+
 "@prisma/adapter-pg@npm:6.16.1":
   version: 6.16.1
   resolution: "@prisma/adapter-pg@npm:6.16.1"
@@ -6782,7 +6789,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@scheduling/pramaan@workspace:packages/pramaan"
   dependencies:
-    "@pramaan/sdk": "npm:0.1.0"
+    "@pramaan/sdk": "patch:@pramaan/sdk@npm%3A0.1.0#~/.yarn/patches/@pramaan-sdk-npm-0.1.0-789bd874d3.patch"
     "@types/node": "npm:^24.10.1"
     typescript: "npm:5.9.2"
   languageName: unknown

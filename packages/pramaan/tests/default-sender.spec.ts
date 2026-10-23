@@ -7,6 +7,10 @@ const originalKey = process.env.PRAMAAN_API_KEY;
 const cwd = process.cwd();
 
 test("a sign-in link sent without a configured sender uses the product's own address", async () => {
+  const originalFake = process.env.PRAMAAN_FAKE;
+  const originalFrom = process.env.EMAIL_FROM;
+  // This test supplies its own fake transport to inspect the email request.
+  delete process.env.PRAMAAN_FAKE;
   process.env.EMAIL_FROM = "";
   process.env.PRAMAAN_API_KEY = "fixture-key";
   expect(serverConfig.from).toBe("noreply@updates.pramaan.one");
@@ -29,7 +33,12 @@ test("a sign-in link sent without a configured sender uses the product's own add
   } finally {
     process.chdir(cwd);
     globalThis.fetch = originalFetch;
-    process.env.PRAMAAN_API_KEY = originalKey;
+    if (originalKey === undefined) delete process.env.PRAMAAN_API_KEY;
+    else process.env.PRAMAAN_API_KEY = originalKey;
+    if (originalFake === undefined) delete process.env.PRAMAAN_FAKE;
+    else process.env.PRAMAAN_FAKE = originalFake;
+    if (originalFrom === undefined) delete process.env.EMAIL_FROM;
+    else process.env.EMAIL_FROM = originalFrom;
   }
   expect(requests).toHaveLength(1);
   expect(requests[0]!.url).toContain("/v1/capabilities/email.send");

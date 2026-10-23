@@ -1,0 +1,69 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PRAMAAN_API_KEY: ""
+  PRAMAAN_FAKE: "1"
+  DO_NOT_TRACK: "1"
+  NEXT_TELEMETRY_DISABLED: "1"
+  TURBO_TELEMETRY_DISABLED: "1"
+  YARN_ENABLE_TELEMETRY: "0"
+  CHECKPOINT_DISABLE: "1"
+  HUSKY: "0"
+  SKIP_DB_MIGRATIONS: "1"
+  DATABASE_URL: postgresql://build:build@127.0.0.1:5432/build
+  DATABASE_DIRECT_URL: postgresql://build:build@127.0.0.1:5432/build
+  NEXT_PUBLIC_WEBAPP_URL: http://localhost:3000
+  NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+  NEXTAUTH_URL: http://localhost:3000/api/auth
+  NEXTAUTH_SECRET: build-only-session-placeholder
+  SCHEDULING_ENCRYPTION_KEY: "00000000000000000000000000000000"
+  NODE_OPTIONS: --max-old-space-size=6144
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run lint
+        run: |
+          node .yarn/releases/yarn-4.12.0.cjs lint
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run typecheck
+        run: |
+          node .yarn/releases/yarn-4.12.0.cjs workspace @scheduling/pramaan check-types
+          node .yarn/releases/yarn-4.12.0.cjs type-check --env-mode=loose
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run test
+        run: |
+          bun test ./packages/pramaan
+          node .yarn/releases/yarn-4.12.0.cjs test --maxWorkers=1
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run build
+        run: |
+          node .yarn/releases/yarn-4.12.0.cjs build --env-mode=loose

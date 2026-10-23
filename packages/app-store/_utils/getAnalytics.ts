@@ -4,6 +4,11 @@ import type { CredentialPayload } from "@scheduling/types/Credential";
 
 import { AnalyticsServiceMap } from "../analytics.services.generated";
 
+const analyticsServices: Record<
+  string,
+  Promise<{ default: (credential: CredentialPayload) => AnalyticsService }>
+> = AnalyticsServiceMap;
+
 const log = logger.getSubLogger({ prefix: ["AnalyticsManager"] });
 
 export const getAnalyticsService = async ({
@@ -16,7 +21,7 @@ export const getAnalyticsService = async ({
 
   const analyticsName = analyticsType.split("_")[0];
 
-  const analyticsAppImportFn = AnalyticsServiceMap[analyticsName as keyof typeof AnalyticsServiceMap];
+  const analyticsAppImportFn = analyticsServices[analyticsName];
 
   if (!analyticsAppImportFn) {
     log.warn(`analytics app not implemented`);

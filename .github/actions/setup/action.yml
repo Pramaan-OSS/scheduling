@@ -1,0 +1,24 @@
+name: Set up scheduling
+description: Install locked dependencies and generate local database types
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .node-version
+    - name: Enable the pinned package manager
+      shell: bash
+      run: corepack enable
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .node-version
+        cache: yarn
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: .bun-version
+    - name: Install dependencies
+      shell: bash
+      run: YARN_ENABLE_SCRIPTS=false node .yarn/releases/yarn-4.12.0.cjs install --immutable --mode=skip-build
+    - name: Generate database client
+      shell: bash
+      run: node .yarn/releases/yarn-4.12.0.cjs prisma generate

@@ -1,3 +1,5 @@
+[![CI](https://github.com/Pramaan-OSS/scheduling/actions/workflows/ci.yml/badge.svg)](https://github.com/Pramaan-OSS/scheduling/actions/workflows/ci.yml)
+
 # Scheduling
 
 Scheduling is a booking product for sharing availability, managing event types and appointments, and working with teams. It uses a neutral glass theme, local fonts and application-owned accounts. Outside services go through one Pramaan client.
